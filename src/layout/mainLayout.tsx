@@ -3,6 +3,7 @@ import Header from '@/components/header'
 import { ReactNode} from 'react';
 import '../app/globals.css';
 
+
 interface MainProps {
   children: ReactNode;
 }
