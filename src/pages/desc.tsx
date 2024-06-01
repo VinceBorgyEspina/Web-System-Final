@@ -1,13 +1,12 @@
-"use client";
-
+// src/pages/ProfilePage.tsx
 import React from 'react';
-import { Container, Typography, TextField, Button, IconButton, Grid, Paper } from '@material-ui/core';
+import { Container, Typography, TextField, Button, IconButton, Grid, Paper } from '@mui/material';
 import { Formik, Form, Field, FieldArray } from 'formik';
 import useSWR, { mutate } from 'swr';
 import axios from 'axios';
 import Main from '@/layout/mainLayout';
-import DeleteIcon from '@material-ui/icons/Delete';
-import { makeStyles } from '@material-ui/core/styles';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { styled } from '@mui/system';
 
 const fetcher = (url: string) => axios.get(url).then(res => res.data);
 
@@ -25,7 +24,6 @@ interface User {
 }
 
 const ProfilePage: React.FC = () => {
-  const classes = useStyles();
   const { data, error } = useSWR<User>('/api/user', fetcher);
 
   if (error) return <div>Error loading user data</div>;
@@ -34,7 +32,7 @@ const ProfilePage: React.FC = () => {
   return (
     <Main>
       <Container className='w-full md:w-1/2 justify-start mt-8'>
-        <Typography variant="h4" className={`${classes.title} mb-4`}>Descriptions</Typography>
+        <StyledTypography variant="h4" className="mb-4 text-white">Descriptions</StyledTypography>
         <Formik
           initialValues={{ descs: data.desc }}
           onSubmit={(values, actions) => {
@@ -57,10 +55,10 @@ const ProfilePage: React.FC = () => {
                 {({ push, remove }) => (
                   <div>
                     {values.descs.length === 0 && (
-                      <Typography variant="body1" className={classes.noDescription}>No descriptions available.</Typography>
+                      <StyledTypography variant="body1" className="text-white">No descriptions available.</StyledTypography>
                     )}
                     {values.descs.map((desc, index) => (
-                      <Paper key={index} className={classes.descContainer}>
+                      <StyledPaper key={index} className="mb-4 p-4 rounded-lg shadow-lg">
                         <Grid container spacing={2} alignItems="center">
                           <Grid item xs={12} sm={5}>
                             <Field
@@ -68,8 +66,8 @@ const ProfilePage: React.FC = () => {
                               as={TextField}
                               label="Title"
                               fullWidth
-                              InputProps={{ className: classes.inputText }}
-                              InputLabelProps={{ className: classes.inputLabel }}
+                              InputProps={{ className: 'inputText text-white' }}
+                              InputLabelProps={{ className: 'inputLabel text-white' }}
                             />
                           </Grid>
                           <Grid item xs={12} sm={5}>
@@ -78,23 +76,23 @@ const ProfilePage: React.FC = () => {
                               as={TextField}
                               label="Content"
                               fullWidth
-                              InputProps={{ className: classes.inputText }}
-                              InputLabelProps={{ className: classes.inputLabel }}
+                              InputProps={{ className: 'inputText text-white' }}
+                              InputLabelProps={{ className: 'inputLabel text-white' }}
                             />
                           </Grid>
                           <Grid item xs={12} sm={2}>
-                            <IconButton onClick={() => remove(index)} aria-label="delete" className={classes.deleteButton}>
-                              <DeleteIcon />
+                            <IconButton onClick={() => remove(index)} aria-label="delete" className="deleteButton">
+                              <DeleteIcon style={{ color: '#EF4444' }} />
                             </IconButton>
                           </Grid>
                         </Grid>
-                      </Paper>
+                      </StyledPaper>
                     ))}
                     <Button
+                      onClick={() => push({ title: '', content: '' })}
                       variant="contained"
                       color="primary"
-                      onClick={() => push({ title: '', content: '' })}
-                      className={`${classes.addButton} mt-4`}
+                      className="mt-4"
                     >
                       Add Description
                     </Button>
@@ -114,35 +112,22 @@ const ProfilePage: React.FC = () => {
   );
 }
 
-const useStyles = makeStyles((theme) => ({
-  title: {
-    color: '#3B82F6', // Primary blue color
-  },
-  noDescription: {
-    color: '#D1D5DB', // Light gray color
-  },
-  descContainer: {
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  color: '#3B82F6', // Primary blue color
+}));
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  marginBottom: theme.spacing(4),
+  padding: theme.spacing(4),
+  backgroundColor: '#1F2937', // Dark blue-gray background
+  color: '#FFFFFF', // White text
+  '& .MuiTextField-root': {
     marginBottom: theme.spacing(2),
-    padding: theme.spacing(2),
-    border: `1px solid ${theme.palette.divider}`,
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: '#1F2937', // Dark blue-gray background
-    color: '#F3F4F6', // Light gray text
-  },
-  inputText: {
-    color: 'white',
-  },
-  inputLabel: {
-    color: 'darkgray',
-  },
-  deleteButton: {
-    color: '#EF4444', // Red color for delete button
-  },
-  addButton: {
-    backgroundColor: '#3B82F6',
-    color: 'white',
-    '&:hover': {
-      backgroundColor: '#2563EB',
+    '& .MuiInputLabel-root': {
+      color: '#FFFFFF !important', // Ensure label is white
+    },
+    '& .MuiInputBase-root': {
+      color: '#FFFFFF', // Ensure input text is white
     },
   },
 }));
