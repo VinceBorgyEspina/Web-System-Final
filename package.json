@@ -16,10 +16,10 @@
     "next": "14.2.3",
     "react": "^18",
     "react-dom": "^18",
-    "@types/react": "^18.0.0",
-    "swr": "^2.2.5",
+    "@types/react": "^18.3.3", 
     "yup": "^1.4.0"
-  }  
+  }
+  
   ,
   "devDependencies": {
     "@types/node": "^20",
